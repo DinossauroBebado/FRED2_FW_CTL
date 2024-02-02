@@ -54,5 +54,4 @@ void loop() {
   }
   ros_loop(cmd_linear,cmd_angular,emergency_break, triangle,circle,battery_level,connected);
 
-  nh.spinOnce();
 }
