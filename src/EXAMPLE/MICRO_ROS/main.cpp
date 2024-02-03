@@ -10,10 +10,20 @@ rcl_publisher_t joy_publisher;
 sensor_msgs__msg__Joy joy_msg;
 
 #define JOY_MSG_SIZE 4  // Number of elements in the axes array
-#define BOTTON_MSG_SIZE 
+#define BOTTON_MSG_SIZE 12
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){error_loop();}}
 #define RCSOFTCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){error_loop();}}
 
+#define LED_PIN 2
+
+void error_loop(){
+  for (int i = 0; i<10; i++)
+  {
+    digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+    vTaskDelay(pdMS_TO_TICKS(100));
+  }
+  ESP.restart();
+}
 
 void joy_callback(const void *msgin)
 {
@@ -36,16 +46,7 @@ void joy_callback(const void *msgin)
         Serial.println(msg->buttons.data[i]);
     }
 }
-#define LED_PIN 2
 
-void error_loop(){
-  for (int i = 0; i<10; i++)
-  {
-    digitalWrite(LED_PIN, !digitalRead(LED_PIN));
-    vTaskDelay(pdMS_TO_TICKS(100));
-  }
-  ESP.restart();
-}
 
 void setup()
 {
@@ -66,12 +67,12 @@ void setup()
         "joy"));
 
     // Initialize the Joy message
-    // joy_msg.header.frame_id.data = "joy_frame";
-    joy_msg.header.frame_id.size = 9;  // Length of the string "joy_frame"
+    joy_msg.header.frame_id.data = "joy_frame";
+    joy_msg.header.frame_id.size = 20;  // Length of the string "joy_frame"
     joy_msg.axes.size = JOY_MSG_SIZE;
     joy_msg.axes.data = (float *)malloc(sizeof(float) * JOY_MSG_SIZE);
-    joy_msg.buttons.size = JOY_MSG_SIZE;
-    joy_msg.buttons.data = (int32_t *)malloc(sizeof(int32_t) * JOY_MSG_SIZE);
+    joy_msg.buttons.size = BOTTON_MSG_SIZE;
+    joy_msg.buttons.data = (int32_t *)malloc(sizeof(int32_t) * BOTTON_MSG_SIZE);
 
     // Set up Joy message values (example values)
     for (size_t i = 0; i < JOY_MSG_SIZE; ++i) {
@@ -80,9 +81,9 @@ void setup()
     }
 
 
-    for (size_t i = 0; i < BOTTON_MSG_SIZE; ++i) {
+    for (size_t j = 0; j < BOTTON_MSG_SIZE; ++j) {
         
-        joy_msg.buttons.data[i] = i % 2;  // Example: Assign binary values to buttons
+        joy_msg.buttons.data[j] = j % 2;  // Example: Assign binary values to buttons
     }
 
     // Create executor
