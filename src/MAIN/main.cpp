@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <MAIN/ps4.h>
-#include <MAIN/ros_com.h>
+#include <MAIN/micro_ros.h>
 #include "rampa.h"
 // test
 
@@ -55,5 +55,6 @@ void loop() {
     digitalWrite(LED_BUILDIN, LOW);
   }
   ros_loop(cmd_linear,cmd_angular,emergency_break, triangle,circle,battery_level,connected);
-
+  
+  rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
 }

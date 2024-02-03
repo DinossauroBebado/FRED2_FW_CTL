@@ -21,8 +21,6 @@
 
 
 rclc_executor_t executor;
-rcl_allocator_t allocator;
-rclc_support_t support;
 rcl_node_t node;
 rcl_publisher_t joy_publisher;
 sensor_msgs__msg__Joy joy_msg;
@@ -71,14 +69,8 @@ void ros_init(){
 
     // Set up Joy message values (example values)
     for (size_t i = 0; i < JOY_MSG_SIZE; ++i) {
-        joy_msg.axes.data[i] = 0.1 * i;  // Example: Assign values to axes
-        joy_msg.buttons.data[i] = i % 2;  // Example: Assign binary values to buttons
-    }
-
-
-    for (size_t j = 0; j < BOTTON_MSG_SIZE; ++j) {
-        
-        joy_msg.buttons.data[j] = j % 2;  // Example: Assign binary values to buttons
+        joy_msg.axes.data[i] = 0;  // Example: Assign values to axes
+        joy_msg.buttons.data[i] = 0;  // Example: Assign binary values to buttons
     }
 
     // Create executor
@@ -89,21 +81,24 @@ void ros_init(){
     delay(1000);
 }
 
-void ros_loop(int cmd_vel_linear, float cmd_vel_angular, int emergency_break,int triangle,int circle, int battery_level, bool connected){
-    // This callback is called when a new Joy message is received
-    const sensor_msgs__msg__Joy *msg = (const sensor_msgs__msg__Joy *)msgin;
+void ros_loop( int cmd_vel_linear, float cmd_vel_angular, int emergency_break,int triangle,int circle, int battery_level, bool connected){
+  
+    // JOYSTICKS 
+    joy_msg.axes.data[0] = cmd_vel_linear ; //Y left stick 
+    joy_msg.axes.data[1] = 0 ; // //X left stick 
+    joy_msg.axes.data[2] = cmd_vel_angular; //Y right stick 
+    joy_msg.axes.data[3] = 0 ;//X right stick 
 
-    // Process the Joy message data as needed
-    // For example, you can print the values of axes and buttons:
-    joy_msg.axes.data[0] = cmd_vel_linear ;
-    joy_msg.axes.data[1] = 0 ; 
-    joy_msg.axes.data[2] = 0 ;
-    joy_msg.axes.data[3] = 0 ;
+    // BOTTONS  
 
-    for (size_t i = 0; i < msg->buttons.size; ++i) {
-        Serial.print("Button ");
-        Serial.print(i);
-        Serial.print(": ");
-        Serial.println(msg->buttons.data[i]);
+    joy_msg.buttons.data[0] = emergency_break; // X 
+    joy_msg.buttons.data[1] = circle; //  O 
+    joy_msg.buttons.data[2] = triangle;// triangulo 
+    for (size_t j = 3; j < BOTTON_MSG_SIZE; ++j) {
+        
+        joy_msg.buttons.data[j] = 0;  
     }
+
+    RCCHECK(rcl_publish(&joy_publisher, &joy_msg, NULL));
+    
 }
