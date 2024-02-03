@@ -27,7 +27,7 @@ sensor_msgs__msg__Joy joy_msg;
 
 #define LED_PIN 2
 #define JOY_MSG_SIZE 4  // Number of elements in the axes array
-#define BOTTON_MSG_SIZE 12
+#define BOTTON_MSG_SIZE 4
 
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){error_loop();}}
 #define RCSOFTCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){error_loop();}}
@@ -60,7 +60,7 @@ void ros_init(){
         "joy"));
 
     // Initialize the Joy message
-    joy_msg.header.frame_id.data = "joy_frame";
+    // joy_msg.header.frame_id.data = "joy_frame";
     joy_msg.header.frame_id.size = 20;  // Length of the string "joy_frame"
     joy_msg.axes.size = JOY_MSG_SIZE;
     joy_msg.axes.data = (float *)malloc(sizeof(float) * JOY_MSG_SIZE);
@@ -81,23 +81,24 @@ void ros_init(){
     delay(1000);
 }
 
-void ros_loop( int cmd_vel_linear, float cmd_vel_angular, int emergency_break,int triangle,int circle, int battery_level, bool connected){
+void ros_loop( int cmd_vel_linear, int  cmd_vel_angular, int emergency_break,int triangle,int circle, int battery_level, bool connected){
   
     // JOYSTICKS 
-    joy_msg.axes.data[0] = cmd_vel_linear ; //Y left stick 
+    joy_msg.axes.data[0] = 0; //cmd_vel_linear ; //Y left stick 
     joy_msg.axes.data[1] = 0 ; // //X left stick 
-    joy_msg.axes.data[2] = cmd_vel_angular; //Y right stick 
+    joy_msg.axes.data[2] = 0 ;//cmd_vel_angular; //Y right stick 
     joy_msg.axes.data[3] = 0 ;//X right stick 
 
     // BOTTONS  
 
-    joy_msg.buttons.data[0] = emergency_break; // X 
-    joy_msg.buttons.data[1] = circle; //  O 
-    joy_msg.buttons.data[2] = triangle;// triangulo 
-    for (size_t j = 3; j < BOTTON_MSG_SIZE; ++j) {
+    joy_msg.buttons.data[0] = 0 ; //emergency_break; // X 
+    joy_msg.buttons.data[1] = 0 ; //circle; //  O 
+    joy_msg.buttons.data[2] = 0 ;//triangle;// triangulo 
+    joy_msg.buttons.data[3] = 0 ;
+    // for (size_t j = 3; j < BOTTON_MSG_SIZE; ++j) {
         
-        joy_msg.buttons.data[j] = 0;  
-    }
+    //     joy_msg.buttons.data[j] = 0;  
+    // }
 
     RCCHECK(rcl_publish(&joy_publisher, &joy_msg, NULL));
     

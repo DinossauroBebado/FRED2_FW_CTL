@@ -23,30 +23,30 @@ void error_loop(){
     vTaskDelay(pdMS_TO_TICKS(100));
   }
   ESP.restart();
+
 }
 
-void joy_callback(const void *msgin)
-{
-    // This callback is called when a new Joy message is received
-    const sensor_msgs__msg__Joy *msg = (const sensor_msgs__msg__Joy *)msgin;
+// void joy_callback()
+// {
+//     // This callback is called when a new Joy message is received
+//     const sensor_msgs__msg__Joy *msg = (const sensor_msgs__msg__Joy *)msgin;
 
-    // Process the Joy message data as needed
-    // For example, you can print the values of axes and buttons:
-    for (size_t i = 0; i < msg->axes.size; ++i) {
-        Serial.print("Axis ");
-        Serial.print(i);
-        Serial.print(": ");
-        Serial.println(msg->axes.data[i]);
-    }
+//     // Process the Joy message data as needed
+//     // For example, you can print the values of axes and buttons:
+//     for (size_t i = 0; i < msg->axes.size; ++i) {
+//         Serial.print("Axis ");
+//         Serial.print(i);
+//         Serial.print(": ");
+//         Serial.println(msg->axes.data[i]);
+//     }
 
-    for (size_t i = 0; i < msg->buttons.size; ++i) {
-        Serial.print("Button ");
-        Serial.print(i);
-        Serial.print(": ");
-        Serial.println(msg->buttons.data[i]);
-    }
-}
-
+//     for (size_t i = 0; i < msg->buttons.size; ++i) {
+//         Serial.print("Button ");
+//         Serial.print(i);
+//         Serial.print(": ");
+//         Serial.println(msg->buttons.data[i]);
+//     }
+// }
 
 void setup()
 {
@@ -92,12 +92,24 @@ void setup()
 
     // Wait for everything to initialize
     delay(1000);
+
 }
+int h = 0 ;
+float H = 0.0;
 
 void loop()
-{
+
+{   // Set up Joy message values (example values)
+    h = h + 1 ; 
+    H = H + 0.1; 
+    for (size_t i = 0; i < JOY_MSG_SIZE; ++i) {
+        joy_msg.axes.data[i] = H;  // Example: Assign values to axes
+        joy_msg.buttons.data[i] = h;  // Example: Assign binary values to buttons
+    }
+
     // Publish the Joy message periodically
     RCCHECK(rcl_publish(&joy_publisher, &joy_msg, NULL));
     rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
     delay(100);
+
 }
