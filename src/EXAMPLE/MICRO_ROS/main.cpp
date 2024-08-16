@@ -10,7 +10,7 @@ rcl_publisher_t joy_publisher;
 sensor_msgs__msg__Joy joy_msg;
 
 #define JOY_MSG_SIZE 4  // Number of elements in the axes array
-#define BOTTON_MSG_SIZE 12
+#define BUTTON_MSG_SIZE 12
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){error_loop();}}
 #define RCSOFTCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){error_loop();}}
 
@@ -71,8 +71,8 @@ void setup()
     joy_msg.header.frame_id.size = 20;  // Length of the string "joy_frame"
     joy_msg.axes.size = JOY_MSG_SIZE;
     joy_msg.axes.data = (float *)malloc(sizeof(float) * JOY_MSG_SIZE);
-    joy_msg.buttons.size = BOTTON_MSG_SIZE;
-    joy_msg.buttons.data = (int32_t *)malloc(sizeof(int32_t) * BOTTON_MSG_SIZE);
+    joy_msg.buttons.size = BUTTON_MSG_SIZE;
+    joy_msg.buttons.data = (int32_t *)malloc(sizeof(int32_t) * BUTTON_MSG_SIZE);
 
     // Set up Joy message values (example values)
     for (size_t i = 0; i < JOY_MSG_SIZE; ++i) {
@@ -81,7 +81,7 @@ void setup()
     }
 
 
-    for (size_t j = 0; j < BOTTON_MSG_SIZE; ++j) {
+    for (size_t j = 0; j < BUTTON_MSG_SIZE; ++j) {
         
         joy_msg.buttons.data[j] = j % 2;  // Example: Assign binary values to buttons
     }

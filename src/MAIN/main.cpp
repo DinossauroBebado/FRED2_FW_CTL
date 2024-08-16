@@ -9,6 +9,8 @@ bool emergency_break = false;
 int battery_level = 0; 
 bool circle = false;
 bool triangle = false; 
+bool arrow_down = false; 
+bool arrow_up = false; 
 // int cmd_linear = 0 ;
 // int cmd_angular = 0 ;
 
@@ -38,6 +40,9 @@ void loop() {
     circle = ps4Circle();
     triangle = ps4Triangle();
 
+    arrow_down = GetButton(ARROW_DOWN);
+    arrow_up = GetButton(ARROW_UP);
+
     battery_level = battery();
     
     // if(battery(30)){
@@ -56,7 +61,7 @@ void loop() {
   }else{
     digitalWrite(LED_BUILDIN, LOW);
   }
-  ros_loop(cmd_linear,cmd_angular,emergency_break, triangle,circle,battery_level,connected);
+  ros_loop(cmd_linear,cmd_angular,emergency_break, triangle, circle, arrow_down, arrow_up, battery_level, connected);
   // ros_loop(0,0,0, 0,0,0,0);
 
  

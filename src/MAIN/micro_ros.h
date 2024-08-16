@@ -10,7 +10,7 @@
 
 #define LED_PIN 2
 #define JOY_MSG_SIZE 4  // Number of elements in the axes array
-#define BOTTON_MSG_SIZE 4
+#define BUTTON_MSG_SIZE 6
 
 
 //------------------PUBS--------------------
@@ -88,12 +88,15 @@ void ros_init(){
     joy_msg.header.frame_id.size = 20;  // Length of the string "joy_frame"
     joy_msg.axes.size = JOY_MSG_SIZE;
     joy_msg.axes.data = (float *)malloc(sizeof(float) * JOY_MSG_SIZE);
-    joy_msg.buttons.size = BOTTON_MSG_SIZE;
-    joy_msg.buttons.data = (int32_t *)malloc(sizeof(int32_t) * BOTTON_MSG_SIZE);
+    joy_msg.buttons.size = BUTTON_MSG_SIZE;
+    joy_msg.buttons.data = (int32_t *)malloc(sizeof(int32_t) * BUTTON_MSG_SIZE);
+    
 
     // Set up Joy message values (example values)
     for (size_t i = 0; i < JOY_MSG_SIZE; ++i) {
         joy_msg.axes.data[i] = 0;  // Example: Assign values to axes
+    }
+    for (size_t i = 0; i < BUTTON_MSG_SIZE; ++i) {
         joy_msg.buttons.data[i] = 0;  // Example: Assign binary values to buttons
     }
 
@@ -105,7 +108,7 @@ void ros_init(){
     delay(1000);
 }
 
-void ros_loop( int cmd_vel_linear, int  cmd_vel_angular, int emergency_break,int triangle,int circle, int battery_level, bool connected){
+void ros_loop( int cmd_vel_linear, int  cmd_vel_angular, int emergency_break,int triangle,int circle, int arrow_down, int arrow_up, int battery_level, bool connected){
   
     bat_msg.data = battery_level*10;
 
@@ -122,8 +125,11 @@ void ros_loop( int cmd_vel_linear, int  cmd_vel_angular, int emergency_break,int
     joy_msg.buttons.data[0] = emergency_break ; //emergency_break; // X 
     joy_msg.buttons.data[1] = circle ; //circle; //  O 
     joy_msg.buttons.data[2] = triangle ;//triangle;// triangulo 
-    joy_msg.buttons.data[3] = 0 ; // no button
-    for (size_t j = 3; j < BOTTON_MSG_SIZE; ++j) {
+    joy_msg.buttons.data[3] = arrow_down; 
+    joy_msg.buttons.data[4] = arrow_up; 
+    joy_msg.buttons.data[5] = 0 ; // no button (?)
+    // joy_msg.buttons.data[3] = 0 ; // no button -> OLD
+    for (size_t j = 3; j < BUTTON_MSG_SIZE; ++j) {
         
         joy_msg.buttons.data[j] = 0;    
     }
