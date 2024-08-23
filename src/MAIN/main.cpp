@@ -22,6 +22,8 @@ void setup() {
   digitalWrite(LED_BUILDIN, LOW);
   ros_init();
   PS4setup();
+
+  Serial.begin(115200);
 }
 
 
@@ -42,6 +44,12 @@ void loop() {
 
     arrow_down = GetButton(ARROW_DOWN);
     arrow_up = GetButton(ARROW_UP);
+
+    Serial.println("-----------------------");
+    Serial.print("UP: ");
+    Serial.println(arrow_up);
+    Serial.print("Down: ");
+    Serial.println(arrow_down);
 
     battery_level = battery();
     

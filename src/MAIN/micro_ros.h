@@ -120,7 +120,11 @@ void ros_loop( int cmd_vel_linear, int  cmd_vel_angular, int emergency_break,int
     joy_msg.axes.data[2] = cmd_vel_angular ;//cmd_vel_angular; //Y right stick 
     joy_msg.axes.data[3] = 0 ;//X right stick 
 
-    // BOTTONS  
+    // BUTTONS  
+    for (size_t j = 0; j < BUTTON_MSG_SIZE; ++j) { // Ale -> acho que eh so para deixar como zero
+        
+        joy_msg.buttons.data[j] = 0;    
+    }
 
     joy_msg.buttons.data[0] = emergency_break ; //emergency_break; // X 
     joy_msg.buttons.data[1] = circle ; //circle; //  O 
@@ -129,10 +133,10 @@ void ros_loop( int cmd_vel_linear, int  cmd_vel_angular, int emergency_break,int
     joy_msg.buttons.data[4] = arrow_up; 
     joy_msg.buttons.data[5] = 0 ; // no button (?)
     // joy_msg.buttons.data[3] = 0 ; // no button -> OLD
-    for (size_t j = 3; j < BUTTON_MSG_SIZE; ++j) {
+    // for (size_t j = 3; j < BUTTON_MSG_SIZE; ++j) {
         
-        joy_msg.buttons.data[j] = 0;    
-    }
+    //     joy_msg.buttons.data[j] = 0;    
+    // }
 
     RCCHECK(rcl_publish(&connect_publisher, &connect_msg, NULL));
 
